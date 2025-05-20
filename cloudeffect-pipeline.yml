@@ -7,20 +7,18 @@ steps:
       branch: main
 
   - name: 安装依赖
-    type: script
-    script: |
-      python3 -m venv venv
-      source venv/bin/activate
+    type: custom
+    image: python:3.9-slim
+    commands: |
       pip install -r requirements.txt
 
   - name: 执行测试
     type: custom
     image: python:3.9-slim
     commands: |
-      source venv/bin/activate
-      pytest --alluredir=./allure-results
+      pytest --alluredir=./allure-results --html=./report.html
 
-  - name: 生成报告
+  - name: 生成Allure报告
     type: custom
     image: python:3.9-slim
     commands: |
@@ -29,8 +27,26 @@ steps:
       ln -s /opt/allure-2.17.3/bin/allure /usr/bin/allure
       allure generate allure-results -o allure-report --clean
 
-  - name: 保存报告
+  - name: 保存HTML报告
+    type: artifact-save
+    params:
+      source: report.html
+      target: report/
+
+  - name: 保存Allure报告
     type: artifact-save
     params:
       source: allure-report/
-      target: report/  
+      target: allure-report/
+
+  - name: 发布HTML报告
+    type: web-publish
+    params:
+      name: 测试HTML报告
+      path: report/report.html
+
+  - name: 发布Allure报告
+    type: web-publish
+    params:
+      name: 测试Allure报告
+      path: allure-report/
