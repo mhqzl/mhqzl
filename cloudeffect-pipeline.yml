@@ -13,16 +13,6 @@ steps:
       # 安装系统依赖
       apt-get update && apt-get install -y wget unzip openjdk-11-jre-headless
       
-      # 检查测试目录
-      if [ ! -d "tests" ]; then
-        echo "测试目录 'tests' 不存在"
-        exit 1
-      fi
-      if [ -z "$(ls -A tests)" ]; then
-        echo "测试目录 'tests' 为空"
-        exit 1
-      fi
-      
       # 安装 Python 依赖
       pip install -r requirements.txt
       
@@ -30,6 +20,9 @@ steps:
       wget -q https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.17.3/allure-commandline-2.17.3.tgz
       tar -zxvf allure-commandline-2.17.3.tgz -C /opt/
       ln -s /opt/allure-2.17.3/bin/allure /usr/bin/allure
+      
+      # 执行测试
+      pytest --alluredir=./allure-results --html=./report.html
       
       # 执行测试，手动指定测试目录
       pytest tests --alluredir=./allure-results --html=./report.html
