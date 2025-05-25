@@ -3,7 +3,7 @@ steps:
   - name: 检出代码
     type: git-checkout
     params:
-      repository: github.com/your-repo/pytest-demo
+      repository: github.com/mhqzl/mhqzl
       branch: main
 
   - name: 安装依赖并执行测试
