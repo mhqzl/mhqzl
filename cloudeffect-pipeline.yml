@@ -10,32 +10,57 @@ steps:
     type: custom
     image: python:3.9
     commands: |
-      # 安装系统依赖
-      # apt-get update && apt-get install -y wget unzip openjdk-11-jre-headless libffi-dev tk-dev
-      apk update && apk add wget unzip openjdk11-jre-headless libffi-dev tk-dev
-            
-      # 重新安装 setuptools 和 pip
-      pip install --upgrade setuptools pip
+    # 1. 安装最小必要系统依赖
+      if command -v yum >/dev/null; then
+      # 对于yum系统，只安装必要的最小包
+      yum install -y wget unzip java-11-openjdk-headless libffi-devel tk-devel gcc make zlib-devel
+      elif command -v apt-get >/dev/null; then
+      apt-get update && apt-get install -y wget unzip openjdk-11-jre-headless libffi-dev tk-dev gcc make zlib1g-dev
+      elif command -v apk >/dev/null; then
+      apk add --no-cache wget unzip openjdk11-jre-headless libffi-dev tk-dev gcc musl-dev zlib-dev
+      else
+      echo "无法识别包管理器，请手动安装依赖"
+      exit 1
+      fi
       
-      # 检查测试目录
+      # 2. 修复pip和setuptools问题
+      # 清除可能损坏的pip/setuptools安装
+      rm -rf ~/.cache/pip
+      python -m pip install --force-reinstall --upgrade pip setuptools
+      
+      # 3. 检查测试目录（更详细的检查）
       if [ ! -d "test_suite" ]; then
-        echo "测试目录 'test_suite' 不存在"
-        exit 1
+      echo "错误：测试目录 'test_suite' 不存在"
+      echo "当前目录内容:"
+      ls -la
+      exit 1
       fi
-      if [ -z "$(ls -A test_suite)" ]; then
-        echo "测试目录 'test_suite' 为空"
-        exit 1
-      fi
-    
-      # 安装 Python 依赖
-      pip install -r requirements.txt
-    
-      # 安装 Allure 命令行工具
-      wget -q https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.17.3/allure-commandline-2.17.3.tgz
-      tar -zxvf allure-commandline-2.17.3.tgz -C /opt/
-      ln -s /opt/allure-2.17.3/bin/allure /usr/bin/allure
       
-      # 执行测试，手动指定测试目录
+      if [ -z "$(ls -A test_suite)" ]; then
+      echo "错误：测试目录 'test_suite' 为空"
+      echo "目录内容:"
+      ls -la test_suite/
+      echo "请确保测试文件已正确部署"
+      exit 1
+      fi
+      
+      # 4. 安装Python依赖（使用国内镜像源）
+      pip install --retries=5 --timeout=300 -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+      
+      # 5. 安装Allure命令行工具
+      if [ ! -f "/usr/bin/allure" ]; then
+      wget -q https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.17.3/allure-commandline-2.17.3.tgz
+      mkdir -p /opt/allure
+      tar -zxvf allure-commandline-2.17.3.tgz -C /opt/
+      ln -sf /opt/allure-2.17.3/bin/allure /usr/bin/allure
+      rm -f allure-commandline-2.17.3.tgz
+      fi
+
+      # 6. 执行测试
+      echo "当前工作目录: $(pwd)"
+      echo "目录结构:"
+        ls -la
+        
       pytest test_suite --alluredir=./allure-results --html=./report.html
 
   - name: 生成Allure报告
