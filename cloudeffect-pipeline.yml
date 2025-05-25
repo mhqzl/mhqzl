@@ -13,11 +13,7 @@ steps:
       # 安装系统依赖
       # apt-get update && apt-get install -y wget unzip openjdk-11-jre-headless libffi-dev tk-dev
       apk update && apk add wget unzip openjdk11-jre-headless libffi-dev tk-dev
-      
-      # 清理损坏的包文件
-      rm -rf /root/workspace/__flow_work/__flow_builds/51e4ff54-e44e-4994-946d-e484a2d73f1c/workspace/mhqzl_HcfJ/Python/3.9.5/lib/python3.9/site-packages/setuptools*
-      rm -rf /root/workspace/__flow_work/__flow_builds/51e4ff54-e44e-4994-946d-e484a2d73f1c/workspace/mhqzl_HcfJ/Python/3.9.5/lib/python3.9/site-packages/pip*
-      
+            
       # 重新安装 setuptools 和 pip
       pip install --upgrade setuptools pip
       
