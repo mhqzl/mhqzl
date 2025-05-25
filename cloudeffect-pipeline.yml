@@ -8,7 +8,7 @@ steps:
 
   - name: 安装依赖并执行测试
     type: custom
-    image: python:3.9-slim
+    image: python:3.9
     commands: |
       # 安装系统依赖
       # apt-get update && apt-get install -y wget unzip openjdk-11-jre-headless libffi-dev tk-dev
@@ -40,7 +40,7 @@ steps:
 
   - name: 生成Allure报告
     type: custom
-    image: python:3.9-slim
+    image: python:3.9
     commands: |
       # 生成报告
       allure generate allure-results -o allure-report --clean
