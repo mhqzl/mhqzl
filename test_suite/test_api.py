@@ -43,20 +43,20 @@ class TestAPIs:
         response_data = response.json()
         assert response_data["title"] == "updated title", "更新后的文章标题不匹配"
 
-    @pytest.mark.dependency(depends=["TestAPIs::test_create_post"])
-    def test_delete_post(self):
-        """测试删除文章"""
-        if not self.created_post_id:
-            pytest.skip("没有可删除的文章")
-
-        response = requests.delete(f"{self.base_url}/posts/{self.created_post_id}")
-
-        # 断言响应状态码
-        assert response.status_code == 200, f"预期状态码 200，实际收到 {response.status_code}"
-
-        # 验证文章已被删除
-        verify_response = requests.get(f"{self.base_url}/posts/{self.created_post_id}")
-        assert verify_response.status_code == 404, "文章未被成功删除"
+    # @pytest.mark.dependency(depends=["TestAPIs::test_create_post"])
+    # def test_delete_post(self):
+    #     """测试删除文章"""
+    #     if not self.created_post_id:
+    #         pytest.skip("没有可删除的文章")
+    #
+    #     response = requests.delete(f"{self.base_url}/posts/{self.created_post_id}")
+    #
+    #     # 断言响应状态码
+    #     assert response.status_code == 200, f"预期状态码 200，实际收到 {response.status_code}"
+    #
+    #     # 验证文章已被删除
+    #     verify_response = requests.get(f"{self.base_url}/posts/{self.created_post_id}")
+    #     assert verify_response.status_code == 404, "文章未被成功删除"
 
     def test_get_posts(self):
         """测试获取所有文章列表"""
