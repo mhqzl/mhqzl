@@ -3,3 +3,4 @@ requests==2.31.0
 allure-pytest==2.13.2
 pytest-html==4.0.2  # 可选，用于生成HTML报告
 pytest-xdist==3.3.1  # 可选，用于并行测试
+pytest-junit==5.1.0  # 可选，用于生成JUnit XML报告

@@ -1,4 +1,5 @@
 import requests
+import allure
 import pytest
 
 
@@ -8,24 +9,25 @@ class TestAPIs:
 
     def test_create_post(self):
         """测试创建新文章"""
-        payload = {
-            "title": "foo",
-            "body": "bar",
-            "userId": 1
-        }
-        response = requests.post(f"{self.base_url}/posts", json=payload)
+        with allure.step("Step1: 测试创建新文章"):
+            payload = {
+                "title": "foo",
+                "body": "bar",
+                "userId": 1
+            }
+            response = requests.post(f"{self.base_url}/posts", json=payload)
 
-        # 断言响应状态码
-        assert response.status_code == 201, f"预期状态码 201，实际收到 {response.status_code}"
+            # 断言响应状态码
+            assert response.status_code == 201, f"预期状态码 201，实际收到 {response.status_code}"
 
-        # 保存创建的文章 ID 用于后续测试
-        response_data = response.json()
-        self.__class__.created_post_id = response_data.get("id")
+            # 保存创建的文章 ID 用于后续测试
+            response_data = response.json()
+            self.__class__.created_post_id = response_data.get("id")
 
-        # 断言响应数据
-        assert response_data["title"] == "foo", "创建的文章标题不匹配"
-        assert response_data["body"] == "bar", "创建的文章内容不匹配"
-        assert response_data["userId"] == 1, "创建的文章用户 ID 不匹配"
+            # 断言响应数据
+            assert response_data["title"] == "foo", "创建的文章标题不匹配"
+            assert response_data["body"] == "bar", "创建的文章内容不匹配"
+            assert response_data["userId"] == 1, "创建的文章用户 ID 不匹配"
 
     # @pytest.mark.dependency(depends=["TestAPIs::test_create_post"])
     # def test_update_post(self):
