@@ -1,1 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="26.702" timestamp="2025-05-28T00:25:10.241751" hostname="闵行权志龙"><testcase classname="test_suite.test_api.TestAPIs" name="test_create_post" time="26.580" /></testsuite></testsuites>
