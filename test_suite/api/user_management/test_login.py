@@ -26,5 +26,5 @@ class TestAPIs:
                 f"预期状态码 200，实际收到 {response.status_code}"
             response_data = response.json()
             assert response_data.get("success") == True, "登录账号不匹配"
-
+            allure.attach(response.text, "Response Body", allure.attachment_type.JSON)
 
