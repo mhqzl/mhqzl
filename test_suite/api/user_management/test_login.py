@@ -1,5 +1,5 @@
 import allure
-from  utils.request_log import get_logged_session
+from utils.request_log import get_logged_session
 
 
 class TestAPIs:
